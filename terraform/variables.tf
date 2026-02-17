@@ -7,9 +7,13 @@ variable "aws_region" {
 variable "instance_type" {
   description = "Тип инстанса EC2"
   type        = string
-  default     = "t3.medium"
+  default     = "t3.micro"
 }
-
+variable "availability_zone" {
+  description = "Зона доступности для инстанса"
+  type        = string
+  default     = "us-east-1a"  # Установи здесь ту же зону, что и у твоего ключа
+}
 variable "key_name" {
   description = "Имя SSH ключа, созданного в AWS"
   type        = string
