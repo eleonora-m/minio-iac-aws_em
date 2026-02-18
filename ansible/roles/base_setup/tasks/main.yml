@@ -1,0 +1,90 @@
+---
+# Task #17: Base packages, SSH hardening, Firewall, Users
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install base packages
+  apt:
+    name: "{{ base_packages }}"
+    state: present
+
+- name: Configure SSH - Disable root login
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitRootLogin'
+    line: "PermitRootLogin {{ ssh_permit_root_login }}"
+  notify: restart sshd
+
+- name: Configure SSH - Disable password auth
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: "PasswordAuthentication {{ ssh_password_authentication }}"
+  notify: restart sshd
+
+- name: Install and configure UFW firewall
+  apt:
+    name: ufw
+    state: present
+
+- name: Allow SSH through firewall
+  ufw:
+    rule: allow
+    port: "{{ ssh_port }}"
+    proto: tcp
+
+- name: Allow application ports through firewall
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop: "{{ firewall_allowed_ports }}"
+  when: item != "22"
+
+- name: Enable UFW
+  ufw:
+    state: enabled
+
+# Task #18: Time sync and log rotation
+
+- name: Configure timezone to UTC
+  timezone:
+    name: UTC
+
+- name: Start and enable chrony for time sync
+  systemd:
+    name: chrony
+    state: started
+    enabled: yes
+
+- name: Configure log rotation
+  copy:
+    content: |
+      /var/log/*.log {
+          daily
+          rotate 7
+          compress
+          delaycompress
+          missingok
+          notifempty
+      }
+    dest: /etc/logrotate.d/custom-logs
+    mode: '0644'
+
+# Basic OS tuning
+- name: Set system file limits
+  pam_limits:
+    domain: '*'
+    limit_type: "{{ item.type }}"
+    limit_item: nofile
+    value: "{{ item.value }}"
+  loop:
+    - { type: 'soft', value: '65535' }
+    - { type: 'hard', value: '65535' }
+
+- name: Display setup completion
+  debug:
+    msg: "Base setup completed: packages installed, SSH hardened, firewall configured, time sync enabled"
