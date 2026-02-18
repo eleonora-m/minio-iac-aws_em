@@ -1,0 +1,23 @@
+---
+# === Base packages ===
+base_packages:
+  - curl
+  - wget
+  - vim
+  - htop
+  - net-tools
+  - chrony
+
+# === SSH Hardening ===
+ssh_port: 22
+ssh_permit_root_login: "no"
+ssh_password_authentication: "no"
+
+# === Firewall ===
+firewall_allowed_ports:
+  - "22"    # SSH
+  - "9000"  # MinIO API
+  - "9001"  # MinIO Console
+
+# === Time sync (Task #18) ===
+ntp_timezone: "UTC"
