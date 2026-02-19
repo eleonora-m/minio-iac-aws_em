@@ -4,6 +4,8 @@ resource "aws_instance" "minio_server" {
   
   # ВОТ ЭТА МАГИЧЕСКАЯ СТРОЧКА:
   availability_zone = var.availability_zone 
+
+  user_data = file("install_minio.sh")
   
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.minio_sg.id]
