@@ -1,0 +1,23 @@
+---
+- name: Base System Setup and Hardening (Epic 4)
+  hosts: minio_servers
+  become: true
+  
+  tasks:
+    - name: Show target server
+      debug:
+        msg: "Configuring base system on {{ inventory_hostname }} ({{ ansible_host }})"
+    
+    - name: Apply base setup (Task #17, #18)
+      include_role:
+        name: base_setup
+      tags: ['base']
+    
+    - name: Base setup complete
+      debug:
+        msg: 
+          - "✅ Roles created and applied"
+          - "✅ Time sync and log rotation configured"
+          - "✅ Base packages installed"
+          - "✅ SSH hardened"
+          - "✅ Firewall configured"
