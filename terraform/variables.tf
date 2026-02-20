@@ -1,22 +1,27 @@
 variable "aws_region" {
-  description = "Регион, где разворачиваем MinIO"
+  description = "Регион AWS для развертывания"
   type        = string
-  default     = "eu-central-1"
+  default     = "us-east-1"  # Установи здесь тот регион, где твой ключ
 }
 
 variable "instance_type" {
-  description = "Тип сервера"
+  description = "Тип инстанса EC2"
   type        = string
-  default     = "t3.medium"
+  default     = "t3.micro"
 }
-
-variable "key_name" {
-  description = "Имя твоего SSH ключа в панели AWS"
+variable "availability_zone" {
+  description = "Зона доступности для инстанса"
   type        = string
+  default     = "us-east-1a"  # Установи здесь ту же зону, что и у твоего ключа
+}
+variable "key_name" {
+  description = "Имя SSH ключа, созданного в AWS"
+  type        = string
+  # Значение по умолчанию не ставим, чтобы случайно не запушить его в GitHub
 }
 
 variable "project_name" {
   description = "Название проекта для тегов"
   type        = string
-  default     = "minio-prod"
+  default     = "minio-production"
 }

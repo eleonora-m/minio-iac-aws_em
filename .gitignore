@@ -1,3 +1,4 @@
+
 .vscode
 *.tfstate
 *.terraform
@@ -24,3 +25,8 @@ env.bak/
 venv.bak/
 pyvenv*
 .DS_Store
+*.tfstate.backup
+
+ 4ee1d49 (Ignore terraform tfstate backup)
+
+
